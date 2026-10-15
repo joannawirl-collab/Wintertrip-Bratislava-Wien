@@ -1,0 +1,853 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Wintertrip Bratislava & Wien</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700;800&family=Instrument+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+/* Layout: eine Spalte wie ein Reiseprogramm. Pro Stadt ein Abschnitt, pro Tag ein Block:
+   ein dunkler Fixpunkt, darunter helle Auswahlkarten mit Abstimmung. Bratislava blau (Blaue Kirche), Wien rot (rot-weiß-rot). */
+:root{
+  --bg:#ECEFF3; --card:#FFFFFF; --soft:#F4F6F9; --ink:#14202B; --muted:#586574; --line:#D3DAE2;
+  --sk:#2A5CA8; --sk-tint:#DCE7F6; --at:#B01E38; --at-tint:#F6DDE2;
+  --fix-bg:#14202B; --fix-fg:#F2F5F8; --fix-muted:#AEBBC9; --fix-line:#4A5A6B;
+  --must-bg:#1E7B57; --must-fg:#FFFFFF; --like-bg:#D8EEE3; --like-fg:#15523B;
+  --meh-bg:#E2E7EC; --meh-fg:#46525F; --no-bg:#4B5766; --no-fg:#FFFFFF;
+  --warn-bg:#FBEFD5; --warn-fg:#6B4A00;
+  --f-display:"Bricolage Grotesque",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-body:"Instrument Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0D141B; --card:#141E28; --soft:#101922; --ink:#E8EDF2; --muted:#94A2B1; --line:#263443;
+    --sk:#7EA8E8; --sk-tint:#1A2B44; --at:#F1869A; --at-tint:#3A1A23;
+    --fix-bg:#1D2B3A; --fix-fg:#F2F5F8; --fix-muted:#A3B3C4; --fix-line:#4A5C6F;
+    --must-bg:#2FA372; --must-fg:#04140D; --like-bg:#17372B; --like-fg:#9DDCC0;
+    --meh-bg:#223140; --meh-fg:#A7B4C2; --no-bg:#5C6B7C; --no-fg:#FFFFFF;
+    --warn-bg:#3A2D0E; --warn-fg:#F2D48A;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0D141B; --card:#141E28; --soft:#101922; --ink:#E8EDF2; --muted:#94A2B1; --line:#263443;
+  --sk:#7EA8E8; --sk-tint:#1A2B44; --at:#F1869A; --at-tint:#3A1A23;
+  --fix-bg:#1D2B3A; --fix-fg:#F2F5F8; --fix-muted:#A3B3C4; --fix-line:#4A5C6F;
+  --must-bg:#2FA372; --must-fg:#04140D; --like-bg:#17372B; --like-fg:#9DDCC0;
+  --meh-bg:#223140; --meh-fg:#A7B4C2; --no-bg:#5C6B7C; --no-fg:#FFFFFF;
+  --warn-bg:#3A2D0E; --warn-fg:#F2D48A;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.45}
+button,input,select,textarea{font:inherit;color:inherit}
+.wrap{max-width:720px;margin:0 auto;padding-block:22px 90px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--f-display);margin:0;text-wrap:balance;line-height:1.1}
+p{margin:0}
+:focus-visible{outline:3px solid var(--sk);outline-offset:2px}
+
+/* Kopf */
+.eyebrow{font-family:var(--f-mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.hero h1{font-size:clamp(40px,11vw,60px);font-weight:800;letter-spacing:-.02em;margin-top:6px}
+.hero .route-line{font-family:var(--f-display);font-weight:700;font-size:clamp(20px,5.5vw,26px);margin-top:6px}
+.sk-t{color:var(--sk)} .at-t{color:var(--at)}
+.who{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;margin-top:18px;padding:12px 14px;background:var(--card);border:1px solid var(--line);border-radius:10px}
+.who label{font-weight:600}
+.who input{flex:1 1 150px;min-width:0;min-height:40px;padding:0 12px;border:1px solid var(--line);border-radius:8px;background:var(--soft)}
+.who small{flex-basis:100%;color:var(--muted)}
+.banner{margin-top:12px;padding:12px 14px;border-radius:10px;background:var(--warn-bg);color:var(--warn-fg);font-weight:500}
+
+/* Navigation */
+.nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);padding-top:14px;margin-top:6px;border-bottom:1px solid var(--line)}
+.tabs{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{flex:1 0 auto;min-height:44px;padding:0 14px;background:none;border:0;border-bottom:3px solid transparent;font-weight:600;color:var(--muted);cursor:pointer;white-space:nowrap}
+.tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--ink)}
+.chips{display:flex;gap:6px;overflow-x:auto;padding:8px 0 10px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:0 0 auto;min-height:36px;padding:0 12px;border-radius:999px;border:1px solid var(--line);background:var(--card);font-family:var(--f-mono);font-size:12.5px;cursor:pointer}
+.chip.sk{border-color:var(--sk);color:var(--sk)} .chip.at{border-color:var(--at);color:var(--at)}
+
+/* Regeln und Legende */
+.rules{margin-top:20px;padding:16px;background:var(--card);border:1px solid var(--line);border-radius:10px}
+.rules h2{font-size:20px}
+.rules ul{margin:10px 0 0;padding-left:18px;display:grid;gap:5px}
+.legend{margin-top:12px;display:flex;flex-wrap:wrap;gap:6px 14px;color:var(--muted);font-size:13px}
+.legend b{color:var(--ink);font-weight:600}
+
+/* Städte und Tage */
+.city{margin-top:36px}
+.cityhead{padding-bottom:10px;border-bottom:2px solid currentColor}
+.city.sk .cityhead{color:var(--sk)} .city.at .cityhead{color:var(--at)}
+.cityhead h2{font-size:clamp(34px,9vw,46px);font-weight:800;letter-spacing:-.02em}
+.cityhead p{color:var(--muted);font-size:13.5px;margin-top:4px}
+.day{margin-top:28px;display:grid;gap:10px;scroll-margin-top:120px}
+.dayhead{display:flex;align-items:baseline;flex-wrap:wrap;gap:2px 10px}
+.dow{font-family:var(--f-mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);min-width:22px}
+.dt{font-family:var(--f-display);font-weight:800;font-size:30px;letter-spacing:-.01em}
+.city.sk .dt{color:var(--sk)} .city.at .dt{color:var(--at)}
+.dayhead h3{font-size:19px;font-weight:700}
+.daynote{color:var(--muted);font-size:14px}
+.lbl{font-family:var(--f-mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-top:4px}
+.stack{display:grid;gap:10px}
+.dinner{padding:11px 14px;border-radius:10px;background:var(--soft);border:1px solid var(--line);font-size:14px}
+.city.sk .dinner b{color:var(--sk)} .city.at .dinner b{color:var(--at)}
+.foodbox{border:1px solid var(--line);border-radius:10px;background:var(--soft);padding:0}
+.foodbox summary{min-height:48px;display:flex;align-items:center;gap:10px;padding:0 14px;font-family:var(--f-display);font-weight:700;font-size:16px;cursor:pointer}
+.foodbox summary .cnt{font-family:var(--f-body);font-weight:500;font-size:13px;color:var(--muted)}
+.foodbox .stack{padding:0 10px 10px}
+.tg{font-family:var(--f-mono);font-size:11.5px;letter-spacing:.06em;text-transform:uppercase}
+.votes.two{grid-template-columns:1fr 1fr}
+.vb[aria-pressed="true"].v-yes{background:var(--must-bg);color:var(--must-fg);border-color:var(--must-bg)}
+.vb.opt[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.optgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:6px}
+.tk{font-size:13.5px;font-weight:500}
+.fixcard .tk{color:var(--fix-muted)}
+.chk{display:flex;align-items:center;gap:10px;min-height:44px;font-weight:500;cursor:pointer}
+.chk input{width:20px;height:20px}
+.sub{margin-top:26px;font-size:20px}
+.subnote{color:var(--muted);font-size:13.5px;margin-top:4px}
+
+/* Karten */
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px;display:grid;gap:10px;min-width:0}
+.card.fixcard{background:var(--fix-bg);color:var(--fix-fg);border-color:transparent}
+.card h4{font-family:var(--f-display);font-size:18px;font-weight:700;margin:0;line-height:1.2;overflow-wrap:anywhere}
+.by{font-size:12.5px;color:var(--muted);font-weight:500}
+.fixcard .by,.fixcard .meta,.fixcard .sum,.fixcard .cnote{color:var(--fix-muted)}
+.cnote{color:var(--muted);font-size:14px}
+.meta{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:13px;color:var(--muted);align-items:center}
+.lv{display:inline-flex;align-items:center;gap:3px}
+.lv i{width:9px;height:9px;border-radius:50%;border:1.5px solid currentColor;display:inline-block;opacity:.6}
+.lv i.on{background:currentColor;opacity:1}
+.lv span{margin-left:5px}
+.route{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:4px 0;font-size:13.5px}
+.route li{display:inline}
+.route li:not(:last-child)::after{content:"→";margin:0 7px;opacity:.55}
+.votes{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.vb{min-height:42px;padding:3px 4px;border-radius:8px;border:1px solid var(--line);background:transparent;color:var(--muted);font-size:12.5px;font-weight:600;line-height:1.1;cursor:pointer;text-wrap:balance}
+.fixcard .vb{border-color:var(--fix-line);color:var(--fix-fg)}
+.vb:disabled{cursor:not-allowed;opacity:.55}
+.vb[aria-pressed="true"].v-must{background:var(--must-bg);color:var(--must-fg);border-color:var(--must-bg)}
+.vb[aria-pressed="true"].v-like{background:var(--like-bg);color:var(--like-fg);border-color:var(--like-bg)}
+.vb[aria-pressed="true"].v-meh{background:var(--meh-bg);color:var(--meh-fg);border-color:var(--meh-bg)}
+.vb.v-rest{grid-column:1/-1}
+.vb[aria-pressed="true"].v-rest{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.vb[aria-pressed="true"].v-no{background:var(--no-bg);color:var(--no-fg);border-color:var(--no-bg)}
+.sum{display:flex;flex-wrap:wrap;gap:2px 14px;font-size:13px;color:var(--muted)}
+.sum b{font-weight:600;color:var(--ink)}
+.fixcard .sum b{color:var(--fix-fg)}
+.sum.none{font-style:italic}
+.linkbtn{background:none;border:0;padding:0;color:var(--muted);text-decoration:underline;cursor:pointer;font-size:13px;justify-self:start}
+.add{min-height:44px;border:1.5px dashed var(--muted);border-radius:10px;background:transparent;color:var(--ink);font-weight:600;cursor:pointer;padding:0 14px}
+.add:hover{background:var(--soft)}
+.btn{min-height:44px;padding:0 18px;border-radius:10px;border:0;background:var(--ink);color:var(--bg);font-weight:600;cursor:pointer}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.empty{padding:18px;border:1px dashed var(--line);border-radius:10px;color:var(--muted);display:grid;gap:10px;justify-items:start}
+
+/* Mein Plan */
+.planitem{display:flex;gap:10px;align-items:flex-start;padding:12px 14px;background:var(--card);border:1px solid var(--line);border-radius:10px}
+.planitem.fixed{background:var(--fix-bg);color:var(--fix-fg);border-color:transparent}
+.planitem .txt{min-width:0;display:grid;gap:3px}
+.planitem strong{font-family:var(--f-display);font-size:16.5px;font-weight:700;overflow-wrap:anywhere}
+.planitem .with{font-size:13px;color:var(--muted)}
+.planitem.fixed .with,.planitem.fixed .meta{color:var(--fix-muted)}
+.tag{flex:0 0 auto;font-size:11.5px;font-weight:600;padding:3px 8px;border-radius:999px;font-family:var(--f-mono);letter-spacing:.03em}
+.tag.must{background:var(--must-bg);color:var(--must-fg)}
+.tag.like{background:var(--like-bg);color:var(--like-fg)}
+.tag.fix{background:var(--fix-fg);color:var(--fix-bg)}
+.load{font-size:13px;color:var(--muted)}
+.load b{color:var(--ink)}
+
+/* Gruppe und Aufgaben */
+.rowcard{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px 14px;display:flex;justify-content:space-between;align-items:center;gap:12px}
+.rowcard .l{min-width:0;display:grid;gap:2px}
+.rowcard strong{font-weight:600;overflow-wrap:anywhere}
+.rowcard small{color:var(--muted);font-size:13px}
+.num{font-family:var(--f-mono);font-size:13px;white-space:nowrap}
+.task{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px;display:grid;gap:8px}
+.task h4{font-family:var(--f-display);font-size:17px;margin:0}
+.people{display:flex;flex-wrap:wrap;gap:6px}
+.pp{padding:3px 10px;border-radius:999px;background:var(--like-bg);color:var(--like-fg);font-size:13px;font-weight:600}
+.pp.open{background:var(--meh-bg);color:var(--meh-fg);font-weight:500}
+.taskbtn{min-height:44px;border-radius:8px;border:1px solid var(--line);background:transparent;font-weight:600;cursor:pointer}
+.taskbtn[aria-pressed="true"]{background:var(--must-bg);color:var(--must-fg);border-color:var(--must-bg)}
+.taskbtn:disabled{opacity:.55;cursor:not-allowed}
+
+/* Eigene Idee */
+#sheet{position:fixed;inset:0;z-index:20;background:rgba(8,14,20,.55);display:flex;align-items:flex-end;justify-content:center}
+#sheet[hidden]{display:none}
+.panel{width:100%;max-width:560px;max-height:92%;overflow:auto;background:var(--card);color:var(--ink);border-radius:16px 16px 0 0;padding:18px max(16px,env(safe-area-inset-left,0px)) calc(18px + env(safe-area-inset-bottom,0px));display:grid;gap:12px}
+.panel h2{font-size:22px}
+.field{display:grid;gap:4px}
+.field label,.field legend{font-weight:600;font-size:14px;padding:0}
+.field input[type=text],.field select,.field textarea{min-height:44px;padding:8px 12px;border:1px solid var(--line);border-radius:8px;background:var(--soft);width:100%}
+.field textarea{min-height:70px;resize:vertical}
+fieldset.field{border:0;margin:0;padding:0}
+.radios{display:flex;flex-wrap:wrap;gap:6px}
+.radios label{display:inline-flex;align-items:center;gap:6px;min-height:40px;padding:0 12px;border:1px solid var(--line);border-radius:999px;font-weight:500;cursor:pointer}
+.radios input:checked + span{font-weight:700}
+.radios label:has(input:checked){background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.actions{display:flex;gap:8px;justify-content:flex-end}
+#toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(18px + env(safe-area-inset-bottom,0px));z-index:30;max-width:min(92vw,460px);background:var(--ink);color:var(--bg);padding:11px 16px;border-radius:10px;font-weight:500;font-size:14px;box-shadow:0 6px 24px rgba(0,0,0,.25)}
+#toast[hidden]{display:none}
+@media (prefers-reduced-motion:no-preference){.vb,.add,.tab{transition:background .15s,color .15s}}
+</style>
+
+<div class="wrap">
+  <header class="hero">
+    <p class="eyebrow">Fr 01.01. bis Mi 06.01. · Wintertrip</p>
+    <h1>Wintertrip</h1>
+    <p class="route-line"><span class="sk-t">Bratislava</span> → <span class="at-t">Wien</span></p>
+    <div class="who">
+      <label for="nameInput">Dein Name</label>
+      <input id="nameInput" type="text" maxlength="30" autocomplete="off" placeholder="z. B. Jule">
+      <small>Damit die anderen sehen, wer was gerne macht.</small>
+    </div>
+    <div id="banner" class="banner" hidden></div>
+  </header>
+
+  <div class="nav">
+    <div class="tabs" role="tablist" aria-label="Bereiche">
+      <button class="tab" role="tab" id="tab-plan" data-tab="plan" aria-selected="true">Programm</button>
+      <button class="tab" role="tab" id="tab-mine" data-tab="mine" aria-selected="false">Mein Plan</button>
+      <button class="tab" role="tab" id="tab-group" data-tab="group" aria-selected="false">Gruppe</button>
+      <button class="tab" role="tab" id="tab-tasks" data-tab="tasks" aria-selected="false">Aufgaben</button>
+      <button class="tab" role="tab" id="tab-trip" data-tab="trip" aria-selected="false">Zimmer &amp; Reise</button>
+    </div>
+    <div class="chips" id="chips" aria-label="Zu einem Tag springen"></div>
+  </div>
+
+  <main id="view" aria-live="polite"></main>
+</div>
+
+<div id="sheet" hidden>
+  <form class="panel" id="ideaForm" role="dialog" aria-modal="true" aria-labelledby="sheetTitle">
+    <h2 id="sheetTitle">Eigene Idee</h2>
+    <div class="field">
+      <label for="ideaDay">Wann?</label>
+      <select id="ideaDay"></select>
+    </div>
+    <div class="field">
+      <label for="ideaTitle">Was machen wir?</label>
+      <input id="ideaTitle" type="text" maxlength="60" placeholder="z. B. Thermen-Nachmittag, Kaffeehaus, Weihnachtsmarkt" autocomplete="off">
+    </div>
+    <div class="field">
+      <label for="ideaNote">Notiz (optional)</label>
+      <textarea id="ideaNote" maxlength="140" placeholder="Ort, Preis, warum es sich lohnt"></textarea>
+    </div>
+    <fieldset class="field">
+      <legend>Art</legend>
+      <div class="radios">
+        <label><input type="radio" name="ideaKind" value="act" checked><span>Programm</span></label>
+        <label><input type="radio" name="ideaKind" value="food"><span>Essen, Café oder Bar</span></label>
+      </div>
+    </fieldset>
+    <div class="field">
+      <label class="chk"><input type="checkbox" id="ideaTicket"><span>Tickets müssen vorab gebucht werden</span></label>
+    </div>
+    <fieldset class="field">
+      <legend>Anstrengung</legend>
+      <div class="radios">
+        <label><input type="radio" name="ideaLevel" value="1" checked><span>gemütlich</span></label>
+        <label><input type="radio" name="ideaLevel" value="2"><span>etwas Laufen</span></label>
+        <label><input type="radio" name="ideaLevel" value="3"><span>viel Laufen</span></label>
+      </div>
+    </fieldset>
+    <div class="actions">
+      <button type="button" class="btn ghost" id="ideaCancel">Abbrechen</button>
+      <button type="submit" class="btn">Idee eintragen</button>
+    </div>
+  </form>
+</div>
+<div id="toast" role="status" hidden></div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCR9mfGl8Ncr0w12EpYc-snMEkUSDYOJPY",
+  authDomain: "wintertrip-bratislava-wien.firebaseapp.com",
+  databaseURL: "https://wintertrip-bratislava-wien-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "wintertrip-bratislava-wien",
+  storageBucket: "wintertrip-bratislava-wien.firebasestorage.app",
+  messagingSenderId: "1092785344534",
+  appId: "1:1092785344534:web:5df9a9a0476b42fe426537",
+  measurementId: "G-2XXNYBCS3K"
+};
+const firebaseApp = initializeApp(firebaseConfig);
+const firebaseAuth = getAuth(firebaseApp);
+const firebaseDb = getDatabase(firebaseApp);
+
+(function(){
+"use strict";
+
+/* ---------- Programmdaten ---------- */
+var LV={1:"gemütlich",2:"etwas Laufen",3:"viel Laufen"};
+var DAYS={
+ d1:{city:"sk",dow:"Fr",date:"01.01.",title:"Anreise",dinner:true,
+  note:"Neujahr: In Bratislava haben viele Läden und Lokale zu. Öffnungszeiten vorher prüfen und den Tisch fürs Abendessen reservieren.",
+  fix:{id:"f-d1",title:"Ankommen, Kaffee & Kuchen",note:"Anreise bis zum Nachmittag, danach gemeinsam ins Café.",level:1},
+  cards:[{id:"ufo",title:"UFO Observation Deck",note:"Aussichtsplattform",cost:"10–12 € p. P.",level:1}],
+  food:[
+   {id:"fach",title:"Fach",tag:"Café",note:"Ventúrska 10, mitten in der Altstadt."},
+   {id:"mondieu",title:"Mondieu",tag:"Café",note:"Panská 27, slowakisches Café in der Altstadt."},
+   {id:"koliba",title:"Koliba Kamzík",tag:"Abendessen",note:"Zelená 5, traditionelle slowakische Küche in der Altstadt."},
+   {id:"roland",title:"Roland",tag:"Abendessen",note:"Hlavné námestie 5, slowakische Küche am Hauptplatz."}
+  ]},
+ d2:{city:"sk",dow:"Sa",date:"02.01.",title:"Bratislava & Schiff nach Wien",dinner:"gemeinsames Abendessen in Wien nach der Ankunft (gegen 19 Uhr)",
+  note:"Die Blaue Kirche ist die Sankt-Elisabeth-Kirche und liegt auf dem Altstadt-Rundgang. Am späten Nachmittag fahren wir mit dem Schiff nach Wien, Ankunft gegen 19 Uhr. Figlmüller nur mit Reservierung.",
+  fixes:[{id:"f-d2",title:"Altstadt-Rundgang Staré Mesto",note:"Michaelertor: Eintritt 6 € p. P.",level:2,
+   route:["Slowakisches Nationaltheater","Sankt-Elisabeth-Kirche","Martinsdom","Michaelertor","Hlavné námestie","Altes Rathaus & Turm","Primatialpalais"]},
+   {id:"f-schiff",title:"Schiff Bratislava → Wien",note:"Abends, Ankunft in Wien gegen 19 Uhr. Danach gemeinsames Abendessen und Check-in im A&O. Ob das Schiff im Januar fährt, klärt die Buchende vorab.",ticket:true,task:"t11",level:1}],
+  cards:[
+   {id:"burg",title:"Burg Bratislava",note:"Ca. 20 Min. zu Fuß von der Altstadt, bergauf. Mit Historischem Museum.",cost:"Museum 12 € p. P.",level:3},
+   {id:"slavin",title:"Kriegerdenkmal Slavín",note:"Hervorragender Ausblick über die Stadt.",level:3}
+  ],
+  food:[
+   {id:"schoendorf",title:"Schöndorf Café",tag:"Frühstück & Café",note:"Obchodná 48. Sehr guter Kaffee und Kuchen. Samstag 9–19 Uhr."},
+   {id:"urbanhouse",title:"Urban House",tag:"Mittag & Café",note:"Laurinská 14, zentral, lange geöffnet."},
+   {id:"soho",title:"Soho Bistro and Coffee",tag:"Mittag",note:"Dunajská 20, Asiarestaurant, in der Nähe der Elisabeth-Kirche."},
+   {id:"slovakpub",title:"Slovak Pub",tag:"Mittag",note:"Obchodná 62, traditionelle slowakische Küche, gleiche Straße wie Schöndorf."},
+   {id:"flagship",title:"Bratislava Flagship Restaurant",tag:"Mittag",note:"Námestie SNP 8, große historische Halle, slowakische Küche."},
+   {id:"figlmueller",title:"Figlmüller",tag:"Abendessen in Wien",note:"Wollzeile 5, Schnitzel. Laut Bewertungen nur mit Reservierung."},
+   {id:"plachutta",title:"Plachutta",tag:"Abendessen in Wien",note:"Wollzeile 38, Tafelspitz."}
+  ]},
+ d3:{city:"at",dow:"So",date:"03.01.",title:"Hofburg & Museen",dinner:true,
+  note:"Alle sind seit Samstagabend in Wien. Für Sonntag geprüft: Naturhistorisches Museum und Kaiserappartements haben offen. Universität und Justizpalast sind sonntags nicht sicher offen und liegen deshalb am Montag. Mochi, Buxbaum und die BAO Bars haben sonntags zu.",
+  fix:{id:"f-hofburg",title:"Heldenplatz & Hofburg",note:"Gemeinsamer Vormittag. Die Kaiserappartements sind täglich von 9 bis 17:30 Uhr geöffnet.",level:2},
+  cards:[
+   {id:"nhm",title:"Naturhistorisches Museum",note:"Sonntag 9–18 Uhr geöffnet.",level:2},
+   {id:"weltmuseum",title:"Weltmuseum Wien",note:"Museumsvorschlag für den Nachmittag. Sonntag laut Besucherseite 10–18 Uhr, bitte auf der Museumswebsite bestätigen.",level:2},
+   {id:"khm",title:"Kunsthistorisches Museum",note:"Gegenüber vom Naturhistorischen Museum.",level:2}
+  ],
+  food:[
+   {id:"central",title:"Café Central",tag:"Café",note:"Herrengasse 14, Kaffeehaus nahe der Hofburg."},
+   {id:"demel",title:"Café Demel",tag:"Café",note:"Kohlmarkt 14, bei der Hofburg. Beste Sachertorte und Mehlspeisen."},
+   {id:"khmcafe",title:"Café im Kunsthistorischen Museum",tag:"Café",note:"Bestes Ambiente. Maria-Theresien-Platz, passt zu den Museen."},
+   {id:"witwebolte",title:"Witwe Bolte",tag:"Abendessen",note:"Gutenberggasse 13 am Spittelberg, Wiener Küche, ab 17:30 Uhr."},
+   {id:"ulrich",title:"Ulrich",tag:"Abendessen",note:"St.-Ulrichs-Platz 1 im 7. Bezirk, sonntags 8–24 Uhr. Zu Fuß vom Museumsviertel."},
+   {id:"dachboden",title:"Der Dachboden",tag:"Rooftop-Bar",note:"Lerchenfelder Straße 1 beim Museumsquartier, sonntags ab 12:30 Uhr."}
+  ]},
+ d4:{city:"at",dow:"Mo",date:"04.01.",title:"Stephansdom & Ring",dinner:true,
+  note:"Montag: Läden, Uni und Sigmund Freud Museum haben offen. Mochi und Buxbaum vorher reservieren.",
+  fix:{id:"f-stephansdom",title:"Stephansdom",note:"Gemeinsam in die Innenstadt.",level:1},
+  cards:[
+   {id:"turm",title:"Stephansdom: Turm besteigen",note:"Wer Lust auf Treppen und Aussicht hat.",level:3},
+   {id:"ring",title:"Wiener Ringstraße",note:"Zu Fuß oder mit der Straßenbahn: Oper, Burgtheater, Rathaus, Universität, Parlament.",level:2},
+   {id:"hofreit",title:"Spanische Hofreitschule",note:"Termine vorab prüfen. Tickets müssen vorab gebucht werden.",ticket:true,task:"t17",level:1},
+   {id:"albertina",title:"Albertina",note:"Museumsvorschlag.",level:2},
+   {id:"hdm",title:"Haus der Musik",note:"Museumsvorschlag.",level:2},
+   {id:"freud",title:"Sigmund Freud Museum",note:"Berggasse 19. Montag 10–18 Uhr geöffnet, dienstags laut Google geschlossen.",level:2},
+   {id:"uni",title:"Universität Wien",note:"Hauptgebäude Montag bis Freitag 6–22 Uhr geöffnet. Sonntags geschlossen.",level:1},
+   {id:"justiz",title:"Justizpalast & Café",note:"Das Café liegt im 5. Stock, per Aufzug. Öffnungszeiten vorab beim Obersten Gerichtshof prüfen.",level:1},
+   {id:"neubau",title:"Shoppen: Neubaugasse, Kirchengasse, Siebensterngasse",note:"Kleine Läden im 7. Bezirk, gut zu verbinden mit Spittelberg.",level:1},
+   {id:"spittelberg",title:"Shoppen & Bummeln: Spittelberg",note:"Stadtviertel mit Gassen, Läden und Cafés im 7. Bezirk.",level:1}
+  ],
+  food:[
+   {id:"hawelka",title:"Café Hawelka",tag:"Café",note:"Dorotheergasse 6. Schönstes Kaffeehaus, nahe Stephansdom und Albertina."},
+   {id:"diglas",title:"Café Diglas",tag:"Café & Mittag",note:"Wollzeile 10, sehr gute Küche, nahe Stephansdom."},
+   {id:"kleinescafe",title:"Das Kleine Café",tag:"Café",note:"Franziskanerplatz 3, nur Barzahlung."},
+   {id:"prueckel",title:"Café Prückel",tag:"Café",note:"Stubenring 24 am Ring, Kaffeehaus mit 50er-Jahre-Flair."},
+   {id:"miznon",title:"Miznon",tag:"Mittag",note:"Schulerstraße 4, direkt hinter dem Stephansdom."},
+   {id:"bao",title:"BAO Bar",tag:"Mittag",note:"Zollergasse 2 im 7. Bezirk, passt zum Shoppen. Montag 11:30–21:30 Uhr."},
+   {id:"buxbaum",title:"Buxbaum",tag:"Abendessen",note:"Grashofgasse 3, gehobene österreichische Küche. Montag 12–15 und 17–23 Uhr."},
+   {id:"mochi",title:"Mochi",tag:"Abendessen",note:"Praterstraße 15, japanische Fusionsküche. Immer voll, bitte reservieren."},
+   {id:"lamee",title:"Lamée Rooftop",tag:"Rooftop-Bar",note:"Lichtensteg 2, nahe Stephansdom, montags 12–1 Uhr."},
+   {id:"sky",title:"Sky Café & Bar",tag:"Rooftop-Bar",note:"Kärntner Straße 19, Blick auf den Stephansdom."},
+   {id:"loft",title:"Rooftop Bar Loft",tag:"Rooftop-Bar",note:"Praterstraße 1, 18. Stock, gleiche Gegend wie Mochi. Montag ab 16 Uhr."}
+  ]},
+ d5:{city:"at",dow:"Di",date:"05.01.",title:"Schönbrunn & Ballett",dinner:"gemeinsames Abendessen vor dem Ballett, wenn ihr hingeht",
+  note:"Am Nachmittag Pause im Hotel, damit alle abends fit fürs Ballett sind.",
+  fix:{id:"f-schoenbrunn",title:"Schloss Schönbrunn, Führung",note:"Am Vormittag.",ticket:true,task:"t6",level:2},
+  cards:[
+   {id:"ballett",title:"Ballett: Schwanensee",note:"Am Abend. Uhrzeit und Spielort tragen wir ein, sobald sie feststehen.",cost:"25 € p. P.",ticket:true,task:"t7",level:1},
+   {id:"naschmarkt",title:"Naschmarkt",note:"Markt mit Imbissen und Cafés.",level:1},
+   {id:"karlskirche",title:"Karlskirche",level:1},
+   {id:"mahue",title:"Shoppen: Mariahilfer Straße",note:"Klassiker. Vom Naschmarkt aus gut zu erreichen.",level:2}
+  ],
+  food:[
+   {id:"dommayer",title:"Café Dommayer",tag:"Café",note:"Nahe Schloss Schönbrunn, elegant und stilvoll."},
+   {id:"residenz",title:"Café Residenz",tag:"Café",note:"Im Schloss Schönbrunn, bekannt für Apfelstrudel."},
+   {id:"topkino",title:"Topkino",tag:"Café & Bar",note:"Rahlgasse 1, Café, Kino und Bar in einem, zwischen Naschmarkt und Mariahilfer Straße."},
+   {id:"jelinek",title:"Café Jelinek",tag:"Café",note:"Otto-Bauer-Gasse 5, Wohnzimmer-Stimmung, nahe Mariahilfer Straße."},
+   {id:"neni",title:"Neni am Naschmarkt",tag:"Mittag",note:"Orientalische Küche direkt am Naschmarkt."},
+   {id:"bao2",title:"BAO Bar",tag:"Abendessen",note:"Operngasse 30, in der Nähe von Karlskirche und Oper. Dienstag 11:30–21:30 Uhr."}
+  ]},
+ d6:{city:"at",dow:"Mi",date:"06.01.",title:"Belvedere & Abreise",
+  note:"Dreikönigstag ist in Österreich Feiertag, die Läden haben zu.",
+  fix:null,
+  cards:[{id:"belvedere",title:"Schloss Belvedere",note:"Letzter Programmpunkt vor der Abreise.",level:2}],
+  food:[]}
+};
+var DAY_ORDER=["d1","d2","d3","d4","d5","d6"];
+DAY_ORDER.forEach(function(id){var d=DAYS[id];d.fixes=d.fixes||(d.fix?[d.fix]:[]);d.food=d.food||[];d.food.forEach(function(f){f.kind="food";});});
+var CITIES=[
+ {id:"sk",name:"Bratislava",sub:"01.–02.01. · Unterkunft: Mama's Design & Boutique",days:["d1","d2"],
+  extras:[
+   {title:"Weitere Ideen",note:"Noch keinem Tag zugeordnet.",cards:[
+     {id:"blauekirche",title:"Blaue Kirche",note:"Ist die Sankt-Elisabeth-Kirche und liegt auf dem Rundgang am 02.01.",level:1},
+     {id:"devin",title:"Burg Devín",note:"Liegt außerhalb der Stadt, die Anfahrt kommt dazu.",level:3}]}
+  ]},
+ {id:"at",name:"Wien",sub:"02.–06.01. · Unterkunft: A&O Wien",days:["d3","d4","d5","d6"],
+  extras:[
+   {title:"Weitere Ideen aus der Karte",note:"Noch keinem Tag zugeordnet. Die Sehenswürdigkeiten liegen weiter draußen, die Anfahrt kommt dazu.",cards:[
+     {id:"prunksaal",title:"Prunksaal der Österreichischen Nationalbibliothek",level:1},
+     {id:"hundert",title:"Hundertwasserhaus",note:"Etwas außerhalb vom Zentrum.",level:1},
+     {id:"donauturm",title:"Donauturm",note:"Weit draußen, eigene Anfahrt.",level:2},
+     {id:"zentralfriedhof",title:"Wiener Zentralfriedhof",note:"Weit draußen, eigene Anfahrt.",level:2}]},
+   {title:"Weiter weg & Ausgehen",note:"Nach dem gemeinsamen Essen. Programm und Öffnung am jeweiligen Abend prüfen.",cards:[
+     {id:"yppen",title:"Yppenplatz & Pizzeria Sofi",kind:"food",tag:"Abendessen",note:"Im 16. Bezirk am Brunnenmarkt, nicht im Zentrum. Sofi hat sonntags zu, sonst ab 17:30 Uhr."},
+     {id:"aurora",title:"Aurora Rooftop",kind:"food",tag:"Rooftop-Bar",note:"Arsenalstraße 10 beim Hauptbahnhof, öffnet am späten Nachmittag."},
+     {id:"forelle",title:"Grelle Forelle",kind:"food",tag:"Club",note:"Programm vorher ansehen."},
+     {id:"flex",title:"Flex",kind:"food",tag:"Club",note:"Programm vorher ansehen."},
+     {id:"pratersauna",title:"Pratersauna",kind:"food",tag:"Club",note:"Programm vorher ansehen."},
+     {id:"clash",title:"Clash",kind:"food",tag:"Club",note:"Programm vorher ansehen."}]}
+  ]}
+];
+var TASKS=[
+ {id:"t10",title:"Zugtickets Hin- und Rückfahrt",note:"Früh buchen, am besten alle in einer Buchung."},
+ {id:"t11",single:true,title:"Tickets buchen: Schiff Bratislava → Wien",note:"Am 02.01. abends, Ankunft in Wien gegen 19 Uhr. Fahrplan prüfen, ob das Schiff im Januar fährt, sonst Zug. Gebucht wird für alle, die bei der Karte Ja gewählt haben."},
+ {id:"t12",title:"Öffentliche Verkehrsmittel",note:"Wien und Bratislava: Welche Tickets lohnen sich, wie kommen wir zu den Fixpunkten."},
+ {id:"t6",single:true,title:"Tickets buchen: Schönbrunn-Führung",note:"Am 05.01. am Vormittag. Gebucht wird für alle, die bei der Karte Ja gewählt haben."},
+ {id:"t7",single:true,title:"Tickets buchen: Ballett Schwanensee",note:"25 € p. P., am 05.01. abends. Gebucht wird für alle, die bei der Karte Ja gewählt haben."},
+ {id:"t17",single:true,title:"Tickets buchen: Spanische Hofreitschule",note:"Nur für alle, die bei der Karte Ja gewählt haben."},
+ {id:"t18",title:"Zimmer im A&O Wien buchen",note:"Vier Nächte, 02. bis 06.01. Nach den Wünschen im Tab „Zimmer & Reise“: Einzel-, Zwei- und Dreibettzimmer."},
+ {id:"t4",title:"Tische reservieren in Bratislava",note:"Gemeinsames Abendessen am 01.01. und 02.01., nach der Abstimmung."},
+ {id:"t5",title:"Tische reservieren in Wien",note:"Gemeinsames Abendessen am 03., 04. und 05.01. Figlmüller, Mochi und Buxbaum nur mit Reservierung."},
+ {id:"t14",title:"Clubs und Bars recherchieren",note:"Rooftop-Bars und Clubs, Programm und Öffnung für die Abende prüfen, bei Bedarf reservieren."},
+ {id:"t1",title:"Verpflegung Hinfahrt",note:"Snacks und Getränke für die Zugfahrt."},
+ {id:"t2",title:"Verpflegung Bratislava → Wien",note:"Für das Schiff am 02.01. abends."},
+ {id:"t3",title:"Verpflegung Rückfahrt",note:"Am 06.01."},
+ {id:"t15",single:true,title:"Fotos & Instastory",note:"Macht die Instastory, lädt täglich zuverlässig alle Fotos in die Cloud hoch und fotografiert jede gemeinsam besuchte Sehenswürdigkeit als Beschreibung für die Story."},
+ {id:"t16",title:"Foto-Cloud einrichten",note:"Ordner pro Tag und Stadt anlegen, Link in die Gruppe schicken, alle laden dort hoch."}
+];
+var FREE_LABEL="Freie Idee";
+
+/* ---------- Zustand ---------- */
+var view=document.getElementById("view");
+var tab="plan",uid=null,ready=false,canWrite=true,dbOk=false;
+var openFood={};
+var people={},me={nick:"",votes:{},ideas:[],tasks:[],trip:{sk:"",at:""},room:{type:"",wish:""}},pendingRender=false;
+var profileFirst="",myRef=null,writing=false,dirty=false,toastTimer=null;
+
+function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];});}
+function norm(d){d=d||{};return {nick:typeof d.nick==="string"?d.nick:"",votes:Object.assign({},d.votes||{}),ideas:Array.isArray(d.ideas)?d.ideas.slice():[],tasks:Array.isArray(d.tasks)?d.tasks.slice():[],trip:{sk:(d.trip&&d.trip.sk)||"",at:(d.trip&&d.trip.at)||""},room:{type:(d.room&&d.room.type)||"",wish:(d.room&&d.room.wish)||""}};}
+function allPeople(){var o=Object.assign({},people);if(uid)o[uid]=me;return o;}
+function nameOf(pid){if(pid===uid)return me.nick||profileFirst||"Du";var p=people[pid];return (p&&p.nick)||"Jemand";}
+function dayLabel(id){var d=DAYS[id];return d?d.dow+" "+d.date:FREE_LABEL;}
+
+function ideasFor(day){
+ var out=[],ap=allPeople();
+ Object.keys(ap).sort().forEach(function(pid){
+  (ap[pid].ideas||[]).forEach(function(i){
+   if(i&&i.day===day)out.push({id:"i-"+pid+"-"+i.id,title:i.title,note:i.note,level:i.level||1,kind:i.kind==="food"?"food":"act",tag:i.kind==="food"?"Essen & Café":"",ticket:!!i.ticket,by:pid,iid:i.id,dayId:day});
+  });
+ });
+ return out;
+}
+function staticCards(){
+ var out=[];
+ DAY_ORDER.forEach(function(id){var d=DAYS[id];d.fixes.forEach(function(f){out.push(Object.assign({dayId:id,fixed:true},f));});d.cards.concat(d.food).forEach(function(c){out.push(Object.assign({dayId:id},c));});});
+ CITIES.forEach(function(c){c.extras.forEach(function(x){x.cards.forEach(function(k){out.push(Object.assign({dayId:"free"},k));});});});
+ return out;
+}
+function allCards(){
+ var out=staticCards();
+ DAY_ORDER.concat(["free"]).forEach(function(d){ideasFor(d).forEach(function(i){out.push(i);});});
+ return out;
+}
+function statsFor(id){
+ var r={must:[],like:[],meh:[],no:[],rest:[],yes:[]},ap=allPeople();
+ Object.keys(ap).forEach(function(pid){var v=ap[pid].votes&&ap[pid].votes[id];if(v&&r[v])r[v].push(pid);});
+ return r;
+}
+
+/* ---------- Bausteine ---------- */
+function levelHTML(l){
+ l=LV[l]?l:1;
+ return '<span class="lv" aria-label="Anstrengung: '+LV[l]+'">'+[1,2,3].map(function(i){return '<i class="'+(i<=l?"on":"")+'"></i>';}).join("")+'<span>'+LV[l]+'</span></span>';
+}
+function summaryHTML(st){
+ var p=[];
+ if(st.must.length)p.push('<span><b>Unbedingt</b> '+esc(st.must.map(nameOf).join(", "))+'</span>');
+ if(st.like.length)p.push('<span><b>Gerne</b> '+esc(st.like.map(nameOf).join(", "))+'</span>');
+ if(st.meh.length)p.push('<span><b>Egal</b> '+st.meh.length+'</span>');
+ if(st.no.length)p.push('<span><b>Lieber nicht</b> '+st.no.length+'</span>');
+ if(st.rest.length)p.push('<span><b>Nichts machen</b> '+st.rest.length+'</span>');
+ return p.length?'<p class="sum">'+p.join("")+'</p>':'<p class="sum none">Noch keine Stimmen</p>';
+}
+function ticketTask(c){return c.task||("tk-"+c.id);}
+function namesOf(list){return list.map(nameOf).join(", ");}
+function ticketSummary(c,st){
+ var ap=allPeople(),ids=Object.keys(ap),tid=ticketTask(c);
+ var open=ids.filter(function(p){return st.yes.indexOf(p)<0&&st.no.indexOf(p)<0;});
+ var bookers=ids.filter(function(p){return (ap[p].tasks||[]).indexOf(tid)>=0;});
+ var dis=(!ready||!canWrite||!uid)?" disabled":"";
+ return '<p class="tk"><b>Tickets vorab nötig.</b> Deine Antwort ist verbindlich: Wer Ja sagt, bekommt ein Ticket.</p>'
+  +'<p class="sum"><span><b>Ja</b> '+st.yes.length+(st.yes.length?' ('+esc(namesOf(st.yes))+')':'')+'</span><span><b>Nein</b> '+st.no.length+'</span></p>'
+  +'<p class="sum"><span><b>Noch offen</b> '+(open.length?esc(namesOf(open)):"niemand")+'</span></p>'
+  +'<p class="sum"><span><b>Bucht</b> '+(bookers.length?esc(namesOf(bookers)):'noch niemand <button type="button" class="linkbtn" data-act="task" data-task="'+esc(tid)+'"'+dis+'>Ich übernehme</button>')+'</span></p>';
+}
+function cardHTML(c,o){
+ o=o||{};
+ var st=statsFor(c.id),mine=me.votes[c.id];
+ var dis=(!ready||!canWrite||!uid)?" disabled":"";
+ function b(k,l){return '<button type="button" class="vb v-'+k+'" data-act="vote" data-card="'+esc(c.id)+'" data-v="'+k+'" aria-pressed="'+(mine===k)+'"'+dis+'>'+l+'</button>';}
+ var meta=[];
+ if(c.kind==="food"){if(c.tag)meta.push('<span class="tg">'+esc(c.tag)+'</span>');}else meta.push('<span>'+levelHTML(c.level)+'</span>');
+ if(c.cost)meta.push('<span>'+esc(c.cost)+'</span>');
+ return '<article class="card'+(o.fix?" fixcard":"")+'" id="c-'+esc(c.id)+'">'
+  +(c.by?'<p class="by">Idee von '+esc(nameOf(c.by))+'</p>':'')
+  +'<h4>'+esc(c.title)+'</h4>'
+  +(c.route?'<ol class="route">'+c.route.map(function(r){return '<li>'+esc(r)+'</li>';}).join("")+'</ol>':'')
+  +(c.note?'<p class="cnote">'+esc(c.note)+'</p>':'')
+  +'<div class="meta">'+meta.join("")+'</div>'
+  +(c.ticket
+    ?'<div class="votes two" role="group" aria-label="Verbindliche Antwort für '+esc(c.title)+'">'+b("yes","Ja, ich komme")+b("no","Nein, ohne mich")+'</div>'+ticketSummary(c,st)
+    :'<div class="votes" role="group" aria-label="Abstimmung für '+esc(c.title)+'">'+b("must","Unbedingt")+b("like","Gerne")+b("meh","Egal")+b("no","Lieber nicht")+(o.fix?'':b("rest","Nichts machen, Pause"))+'</div>'+summaryHTML(st))
+  +(c.by&&c.by===uid?'<button type="button" class="linkbtn" data-act="delidea" data-iid="'+esc(c.iid)+'">Meine Idee löschen</button>':'')
+  +'</article>';
+}
+function dayHTML(id){
+ var d=DAYS[id];
+ var ideas=ideasFor(id);
+ var cards=d.cards.map(function(c){return cardHTML(c);}).join("")+ideas.filter(function(c){return c.kind!=="food";}).map(function(c){return cardHTML(c);}).join("");
+ var foodCards=d.food.map(function(c){return cardHTML(c);}).join("")+ideas.filter(function(c){return c.kind==="food";}).map(function(c){return cardHTML(c);}).join("");
+ var foodCount=d.food.length+ideas.filter(function(c){return c.kind==="food";}).length;
+ return '<section class="day" id="day-'+id+'" aria-labelledby="h-'+id+'">'
+  +'<header class="dayhead"><span class="dow">'+d.dow+'</span><span class="dt">'+d.date+'</span><h3 id="h-'+id+'">'+esc(d.title)+'</h3></header>'
+  +(d.note?'<p class="daynote">'+esc(d.note)+'</p>':'')
+  +(d.fixes.length?'<p class="lbl">'+(d.fixes.length>1?'Fixpunkte':'Fixpunkt')+' · alle zusammen</p><div class="stack">'+d.fixes.map(function(f){return cardHTML(f,{fix:true});}).join("")+'</div>':'')
+  +'<p class="lbl">Zur Auswahl</p>'
+  +'<div class="stack">'+cards+'</div>'
+  +(foodCount?'<details class="foodbox" id="food-'+id+'" data-day="'+id+'"'+(openFood[id]!==false?' open':'')+'><summary>Essen, Café &amp; Bar <span class="cnt">'+foodCount+' Vorschläge</span></summary><div class="stack">'+foodCards+'</div></details>':'')
+  +(d.dinner?'<p class="dinner"><b>Abends fix:</b> '+esc(typeof d.dinner==="string"?d.dinner:"gemeinsames Abendessen")+'. Das Restaurant wählt ihr im Block „Essen, Café &amp; Bar“.</p>':'')
+  +'<button type="button" class="add" data-act="addidea" data-day="'+id+'">+ Eigene Idee, Restaurant oder Café für diesen Tag</button>'
+  +'</section>';
+}
+function planHTML(){
+ var h='<section class="rules"><h2>So läuft der Trip</h2><ul>'
+  +'<li>Fixpunkte: Kaffee &amp; Kuchen zur Ankunft, Altstadt Bratislava und Schiff nach Wien (Sa 02.01.), Hofburg (So 03.01.), Stephansdom (Mo 04.01.) und Schönbrunn (Di 05.01.).</li>'
+  +'<li>Alles andere ist Auswahl. Tippe bei jeder Karte, wie viel Lust du hast. „Nichts machen, Pause“ ist auch eine Antwort.</li>'
+  +'<li>Eigene Ideen zählen genauso. Trag sie unter dem Tag ein.</li>'
+  +'<li>Jeden Abend essen wir fix zusammen, von Fr 01.01. bis Di 05.01. Welches Restaurant, entscheidet ihr per Abstimmung.</li>'
+  +'<li>Das Ballett Schwanensee am 05.01. (25 € p. P.) ist freiwillig.</li>'
+  +'<li>Wo Tickets vorab gebucht werden müssen (Schönbrunn-Führung, Ballett, Hofreitschule), antwortest du verbindlich mit Ja oder Nein. Pro Sehenswürdigkeit bucht eine feste Person, siehe Aufgaben.</li>'
+  +'</ul></section>'
+  +'<p class="legend"><span><b>Anstrengung:</b> '+levelHTML(1)+'</span><span>'+levelHTML(2)+'</span><span>'+levelHTML(3)+'</span><span>(Einschätzung, sag Bescheid, wenn sie nicht passt)</span></p>';
+ CITIES.forEach(function(c){
+  h+='<section class="city '+c.id+'" id="city-'+c.id+'"><div class="cityhead"><h2>'+c.name+'</h2><p>'+esc(c.sub)+'</p></div>';
+  c.days.forEach(function(d){h+=dayHTML(d);});
+  c.extras.forEach(function(x){
+   h+='<h3 class="sub">'+esc(x.title)+'</h3><p class="subnote">'+esc(x.note)+'</p><div class="stack" style="margin-top:10px">'+x.cards.map(function(k){return cardHTML(k);}).join("")+'</div>';
+  });
+  h+='</section>';
+ });
+ h+='<section class="city" id="city-free"><div class="cityhead" style="color:var(--ink)"><h2>Freie Ideen</h2><p>Für alles, was zu keinem Tag passt.</p></div>'
+  +'<div class="stack" style="margin-top:12px">'+ideasFor("free").map(function(c){return cardHTML(c);}).join("")+'</div>'
+  +'<button type="button" class="add" style="margin-top:10px;width:100%" data-act="addidea" data-day="free">+ Eigene Idee eintragen</button></section>';
+ return h;
+}
+
+function mineHTML(){
+ var h='<p class="subnote" style="margin-top:20px">Das ist dein persönlicher Plan aus allem, was du mit „Unbedingt“ oder „Gerne“ markiert hast.</p>';
+ var any=false;
+ function item(c,fixed){
+  var v=me.votes[c.id];
+  var st=statsFor(c.id);
+  var others=st.must.concat(st.like,st.yes).filter(function(p){return p!==uid;}).map(nameOf);
+  var tag;
+  if(c.ticket&&v==="yes")tag='<span class="tag must">Ticket: ja</span>';
+  else if(c.ticket)tag='<span class="tag fix">Fix · Ticket offen</span>';
+  else if(fixed)tag='<span class="tag fix">Fix</span>';
+  else tag='<span class="tag '+(v==="must"?"must":"like")+'">'+(v==="must"?"Unbedingt":"Gerne")+'</span>';
+  return '<div class="planitem'+(fixed?" fixed":"")+'">'+tag+'<div class="txt"><strong>'+esc(c.title)+'</strong><div class="meta">'+(c.kind==="food"?'<span class="tg">'+esc(c.tag||"Essen")+'</span>':levelHTML(c.level))+'</div>'
+   +(others.length?'<span class="with">Auch dabei: '+esc(others.join(", "))+'</span>':'')+'</div></div>';
+ }
+ DAY_ORDER.forEach(function(id){
+  var d=DAYS[id],list=[],load=0;
+  var noFix=false;
+  d.fixes.forEach(function(f){if(me.votes[f.id]==="no"){noFix=true;}else{list.push(item(f,true));load+=f.level;}});
+  var cards=d.cards.concat(d.food).map(function(c){return Object.assign({},c);}).concat(ideasFor(id));
+  cards.forEach(function(c){var v=me.votes[c.id];if(v==="must"||v==="like"||v==="yes"){list.push(item(c,false));load+=(c.kind==="food"?0:(c.level||1));any=true;}});
+  var note="";
+  if(noFix)note='<p class="daynote">Du hast beim Fixpunkt „Lieber nicht“ gewählt. Sprich kurz mit den anderen.</p>';
+  var lab=load<=3?"entspannter Tag":(load<=6?"ausgewogener Tag":"ganz schön viel");
+  h+='<section class="day c-'+d.city+'"><header class="dayhead"><span class="dow">'+d.dow+'</span><span class="dt" style="color:var(--'+d.city+')">'+d.date+'</span><h3>'+esc(d.title)+'</h3></header>'
+   +note+'<div class="stack">'+(list.length?list.join(""):'<p class="daynote">Noch nichts gewählt.</p>')+'</div>'
+   +(list.length?'<p class="load">Anstrengung des Tages: <b>'+lab+'</b></p>':'')+'</section>';
+ });
+ var rest=[];
+ staticCards().filter(function(c){return c.dayId==="free";}).concat(ideasFor("free")).forEach(function(c){var v=me.votes[c.id];if(v==="must"||v==="like"||v==="yes"){rest.push(item(c,false));any=true;}});
+ if(rest.length)h+='<section class="day"><header class="dayhead"><h3>Ohne festen Tag</h3></header><div class="stack">'+rest.join("")+'</div></section>';
+ if(!any)h='<div class="empty" style="margin-top:20px"><p>Du hast noch nichts gewählt. Im Programm findest du alle Vorschläge.</p><button class="btn" data-act="goto" data-tab="plan">Zum Programm</button></div>'+h;
+ return h;
+}
+
+function groupHTML(){
+ var ap=allPeople(),ids=Object.keys(ap).filter(function(p){return Object.keys(ap[p].votes||{}).length||ap[p].nick;});
+ var cards=allCards(),total=cards.length;
+ var h='<h3 class="sub">Wer hat schon abgestimmt</h3><div class="stack" style="margin-top:10px">';
+ if(!ids.length)h+='<div class="empty"><p>Noch niemand. Mach den Anfang im Programm.</p></div>';
+ ids.sort(function(a,b){return Object.keys(ap[b].votes||{}).length-Object.keys(ap[a].votes||{}).length;}).forEach(function(p){
+  h+='<div class="rowcard"><div class="l"><strong>'+esc(nameOf(p))+(p===uid?" (du)":"")+'</strong></div><span class="num">'+Object.keys(ap[p].votes||{}).length+' von '+total+'</span></div>';
+ });
+ h+='</div><h3 class="sub">Fixpunkte-Check</h3><p class="subnote">Hier sollten möglichst alle mitkönnen.</p><div class="stack" style="margin-top:10px">';
+ DAY_ORDER.forEach(function(id){
+  DAYS[id].fixes.forEach(function(f){
+   var st=statsFor(f.id),n=st.must.length+st.like.length+st.meh.length+st.no.length+st.rest.length+st.yes.length;
+   var s=!n?"Noch keine Stimmen":(st.no.length?st.no.length+"× "+(f.ticket?"Nein":"„Lieber nicht“")+". Kurz besprechen?":"Passt bisher für alle");
+   h+='<div class="rowcard"><div class="l"><strong>'+esc(f.title)+'</strong><small>'+dayLabel(id)+' · '+s+'</small></div><span class="num">'+(st.must.length+st.like.length+st.yes.length)+' dafür</span></div>';
+  });
+ });
+ h+='</div><h3 class="sub">Beliebteste Ideen</h3><div class="stack" style="margin-top:10px">';
+ var ranked=cards.map(function(c){var st=statsFor(c.id);return {c:c,st:st,score:(st.must.length+st.yes.length)*2+st.like.length};}).filter(function(x){return x.st.must.length+x.st.like.length+x.st.yes.length>0;}).sort(function(a,b){return b.score-a.score;}).slice(0,10);
+ if(!ranked.length)h+='<div class="empty"><p>Sobald Stimmen da sind, steht hier, worauf ihr am meisten Lust habt.</p></div>';
+ ranked.forEach(function(x){
+  h+='<div class="rowcard"><div class="l"><strong>'+esc(x.c.title)+'</strong><small>'+dayLabel(x.c.dayId)+' · '+esc(x.st.must.concat(x.st.yes,x.st.like).map(nameOf).join(", "))+'</small></div><span class="num">'+(x.st.must.length+x.st.yes.length)+' ★ · '+x.st.like.length+' ♥</span></div>';
+ });
+ return h+'</div>';
+}
+
+function dynTasks(){
+ var out=[];
+ allCards().forEach(function(c){if(c.by&&c.ticket)out.push({id:"tk-"+c.id,single:true,title:"Tickets buchen: "+c.title,note:"Gebucht wird für alle, die bei der Karte Ja gewählt haben."});});
+ return out;
+}
+function ticketCardForTask(id){
+ var all=allCards();
+ for(var i=0;i<all.length;i++){if(all[i].ticket&&ticketTask(all[i])===id)return all[i];}
+ return null;
+}
+function tasksHTML(){
+ var ap=allPeople();
+ var h='<p class="subnote" style="margin-top:20px">Wer übernimmt was? Bei den Ticket-Buchungen bucht pro Sehenswürdigkeit genau eine Person. Alles andere können sich mehrere teilen.</p><div class="stack" style="margin-top:12px">';
+ TASKS.concat(dynTasks()).forEach(function(t){
+  var who=Object.keys(ap).filter(function(p){return (ap[p].tasks||[]).indexOf(t.id)>=0;});
+  var mineT=me.tasks.indexOf(t.id)>=0;
+  var single=!!t.single;
+  var taken=single&&who.length>0&&!mineT;
+  var dis=(!ready||!canWrite||!uid||taken)?" disabled":"";
+  var tc=single?ticketCardForTask(t.id):null,extra="";
+  if(tc){var st=statsFor(tc.id);extra='<p class="cnote">Zusagen bisher: <b>'+st.yes.length+'</b>'+(st.yes.length?' ('+esc(namesOf(st.yes))+')':'')+'. Nein: '+st.no.length+'.</p>';}
+  var label=single?(mineT?"Ich buche ✓ (tippen zum Abgeben)":(taken?"Schon vergeben":"Ich buche")):(mineT?"Ich mache das ✓":"Ich übernehme das");
+  h+='<div class="task"><h4>'+esc(t.title)+'</h4><p class="cnote">'+esc(t.note)+'</p>'+extra+'<div class="people">'
+   +(who.length?who.map(function(p){return '<span class="pp">'+esc(nameOf(p))+'</span>';}).join(""):'<span class="pp open">Noch frei</span>')
+   +'</div><button type="button" class="taskbtn" data-act="task" data-task="'+esc(t.id)+'" aria-pressed="'+mineT+'"'+dis+'>'+label+'</button></div>';
+ });
+ return h+'</div>';
+}
+
+var SK_L={yes:"Ja",no:"Nein",maybe:"Noch unklar"};
+var AT_L={group:"Mit der Gruppe per Schiff am 02.01.",own2:"Ich fahre am 02.01. anders nach Wien",unsure:"Noch unklar"};
+var ROOM_L={single:"Einzelzimmer",double:"Zweibettzimmer",triple:"Dreibettzimmer",any:"Egal"};
+var ROOM_S={single:"Einzel",double:"Zweibett",triple:"Dreibett",any:"egal"};
+function tripHTML(){
+ var ap=allPeople(),ids=Object.keys(ap);
+ var dis=(!ready||!canWrite||!uid)?" disabled":"";
+ function opts(g,map,cur){return '<div class="optgrid">'+Object.keys(map).map(function(k){return '<button type="button" class="vb opt" data-act="trip" data-group="'+g+'" data-val="'+k+'" aria-pressed="'+(cur===k)+'"'+dis+'>'+map[k]+'</button>';}).join("")+'</div>';}
+ function who(fn){return ids.filter(fn);}
+ function tr(p){return ap[p].trip||{};}
+ function rm(p){return ap[p].room||{};}
+ var h='<p class="subnote" style="margin-top:20px">Trag ein, wer wann dabei ist und wie du schlafen möchtest. Das hilft bei den Buchungen.</p><div class="stack" style="margin-top:12px">'
+  +'<section class="card"><h4>Bratislava (01.–02.01.)</h4><p class="cnote">Fährst du mit nach Bratislava?</p>'+opts("sk",SK_L,me.trip.sk)+'</section>'
+  +'<section class="card"><h4>Wien</h4><p class="cnote">Die Gruppe fährt am 02.01. abends mit dem Schiff und ist gegen 19 Uhr in Wien. Wie kommst du nach Wien?</p>'+opts("at",AT_L,me.trip.at)+'</section>'
+  +'<section class="card"><h4>Zimmer im A&amp;O Wien</h4><p class="cnote">Es gibt Einzel-, Zwei- und Dreibettzimmer.</p>'+opts("room",ROOM_L,me.room.type)
+  +'<div class="field"><label for="roomWish">Mit wem möchtest du ins Zimmer? (optional)</label><input id="roomWish" type="text" maxlength="80" value="'+esc(me.room.wish)+'" placeholder="Namen, auch von Leuten, die hier noch nicht eingetragen sind" autocomplete="off"'+dis+'></div></section>'
+  +'</div>';
+ var skYes=who(function(p){return tr(p).sk==="yes";}),skNo=who(function(p){return tr(p).sk==="no";}),skMaybe=who(function(p){return tr(p).sk==="maybe";});
+ var atGroup=who(function(p){return tr(p).at==="group";}),atOwn=who(function(p){return tr(p).at==="own2";}),atUn=who(function(p){return tr(p).at==="unsure";});
+ function cnt(t){return who(function(p){return rm(p).type===t;}).length;}
+ function line(label,list){return '<span><b>'+label+'</b> '+(list.length?esc(namesOf(list)):"niemand")+'</span>';}
+ h+='<h3 class="sub">Überblick</h3><div class="stack" style="margin-top:10px">'
+  +'<div class="card"><h4>Bratislava</h4><p class="sum">'+line("Ja ("+skYes.length+")",skYes)+line("Nein ("+skNo.length+")",skNo)+line("Unklar ("+skMaybe.length+")",skMaybe)+'</p></div>'
+  +'<div class="card"><h4>Anreise nach Wien</h4><p class="sum">'+line("Mit der Gruppe per Schiff ("+atGroup.length+")",atGroup)+line("Reisen anders am 02.01. ("+atOwn.length+")",atOwn)+line("Unklar ("+atUn.length+")",atUn)+'</p></div>'
+  +'<div class="card"><h4>Zimmerwünsche A&amp;O Wien</h4><p class="sum"><span><b>Einzel</b> '+cnt("single")+'</span><span><b>Zweibett</b> '+cnt("double")+'</span><span><b>Dreibett</b> '+cnt("triple")+'</span><span><b>Egal</b> '+cnt("any")+'</span></p></div>'
+  +'</div><h3 class="sub">Wer will mit wem</h3><div class="stack" style="margin-top:10px">';
+ var named=who(function(p){return rm(p).type||rm(p).wish;});
+ if(!named.length)h+='<div class="empty"><p>Noch keine Zimmerwünsche eingetragen.</p></div>';
+ named.forEach(function(p){
+  h+='<div class="rowcard"><div class="l"><strong>'+esc(nameOf(p))+(p===uid?" (du)":"")+'</strong><small>'+(rm(p).wish?'Möchte mit: '+esc(rm(p).wish):'Kein Wunsch angegeben')+'</small></div><span class="num">'+esc(ROOM_S[rm(p).type]||"offen")+'</span></div>';
+ });
+ return h+'</div>';
+}
+
+/* ---------- Anzeige ---------- */
+function toast(msg){
+ var t=document.getElementById("toast");t.textContent=msg;t.hidden=false;
+ clearTimeout(toastTimer);toastTimer=setTimeout(function(){t.hidden=true;},4200);
+}
+function render(){
+ var ae=document.activeElement;
+ if(ae&&view.contains(ae)&&(ae.tagName==="INPUT"||ae.tagName==="TEXTAREA")){pendingRender=true;return;}
+ pendingRender=false;
+ var n=document.getElementById("nameInput");
+ if(document.activeElement!==n)n.value=me.nick||profileFirst||"";
+ var b=document.getElementById("banner");
+ if(!dbOk||!uid){b.hidden=false;b.textContent="Zum Abstimmen und Eintragen musst du angemeldet sein. Lesen kannst du das Programm trotzdem.";}
+ else if(!canWrite){b.hidden=false;b.textContent="Du kannst hier nur lesen. Bitte die Person, die den Link geschickt hat, dir Mitmach-Rechte zu geben.";}
+ else b.hidden=true;
+ ["plan","mine","group","tasks","trip"].forEach(function(k){document.getElementById("tab-"+k).setAttribute("aria-selected",String(k===tab));});
+ document.getElementById("chips").hidden=(tab!=="plan");
+ view.innerHTML=tab==="plan"?planHTML():tab==="mine"?mineHTML():tab==="group"?groupHTML():tab==="tasks"?tasksHTML():tripHTML();
+}
+function buildChips(){
+ var h=DAY_ORDER.map(function(id){var d=DAYS[id];return '<button type="button" class="chip '+d.city+'" data-day="'+id+'">'+d.dow+' '+d.date+'</button>';}).join("");
+ document.getElementById("chips").innerHTML=h;
+}
+
+/* ---------- Speichern ---------- */
+function payload(){return {nick:me.nick||profileFirst||"",votes:me.votes,ideas:me.ideas,tasks:me.tasks,trip:me.trip,room:me.room};}
+function flush(){
+ if(writing||!dirty||!myRef)return;
+ writing=true;dirty=false;
+ myRef.set(payload()).then(function(){writing=false;if(dirty)flush();},function(e){
+  writing=false;
+  var code=e&&e.code;
+  if(code==="invalid_argument"||code==="revoked"||code==="not_granted"){canWrite=false;render();toast("Speichern ist nicht erlaubt. Du kannst nur lesen.");}
+  else if(code==="quota_exceeded"){toast("Der Speicher dieser Seite ist voll. Sag der Person Bescheid, die den Link geschickt hat.");}
+  else toast("Das Speichern hat nicht geklappt. Versuch es gleich noch einmal.");
+ });
+}
+function save(){dirty=true;flush();}
+function canAct(){
+ if(!dbOk||!uid){toast("Zum Mitmachen musst du angemeldet sein.");return false;}
+ if(!ready){toast("Einen Moment, die Seite lädt noch.");return false;}
+ if(!canWrite){toast("Du kannst hier nur lesen.");return false;}
+ return true;
+}
+
+/* ---------- Aktionen ---------- */
+function setVote(id,v){
+ if(!canAct())return;
+ if(me.votes[id]===v)delete me.votes[id];else me.votes[id]=v;
+ render();save();
+}
+function isSingle(id){return id.indexOf("tk-")===0||TASKS.some(function(t){return t.id===id&&t.single;});}
+function toggleTask(id){
+ if(!canAct())return;
+ var i=me.tasks.indexOf(id);
+ if(i<0&&isSingle(id)){
+  var ap=allPeople();
+  var taken=Object.keys(ap).some(function(p){return p!==uid&&(ap[p].tasks||[]).indexOf(id)>=0;});
+  if(taken){toast("Das hat schon jemand übernommen.");return;}
+ }
+ if(i>=0)me.tasks.splice(i,1);else me.tasks.push(id);
+ render();save();
+}
+function delIdea(iid){
+ if(!canAct())return;
+ me.ideas=me.ideas.filter(function(i){return i.id!==iid;});
+ delete me.votes["i-"+uid+"-"+iid];
+ render();save();
+}
+function setTrip(g,v){
+ if(!canAct())return;
+ if(g==="room")me.room.type=(me.room.type===v?"":v);
+ else if(g==="sk"||g==="at")me.trip[g]=(me.trip[g]===v?"":v);
+ else return;
+ render();save();
+}
+function setTab(t){tab=t;render();window.scrollTo(0,0);}
+
+var sheet=document.getElementById("sheet");
+function openSheet(day){
+ if(!canAct())return;
+ var sel=document.getElementById("ideaDay");
+ sel.innerHTML=DAY_ORDER.map(function(id){return '<option value="'+id+'">'+dayLabel(id)+' · '+(DAYS[id].city==="sk"?"Bratislava":"Wien")+'</option>';}).join("")+'<option value="free">Noch kein fester Tag</option>';
+ sel.value=day||"free";
+ document.getElementById("ideaTitle").value="";
+ document.getElementById("ideaNote").value="";
+ document.querySelector('input[name="ideaLevel"][value="1"]').checked=true;
+ document.querySelector('input[name="ideaKind"][value="act"]').checked=true;
+ document.getElementById("ideaTicket").checked=false;
+ sheet.hidden=false;
+ document.getElementById("ideaTitle").focus();
+}
+function closeSheet(){sheet.hidden=true;}
+document.getElementById("ideaCancel").addEventListener("click",closeSheet);
+sheet.addEventListener("click",function(e){if(e.target===sheet)closeSheet();});
+document.addEventListener("keydown",function(e){if(e.key==="Escape"&&!sheet.hidden)closeSheet();});
+document.getElementById("ideaForm").addEventListener("submit",function(e){
+ e.preventDefault();
+ if(!canAct())return;
+ var title=document.getElementById("ideaTitle").value.trim();
+ if(!title){toast("Gib der Idee einen Titel.");document.getElementById("ideaTitle").focus();return;}
+ if(me.ideas.length>=30){toast("Das sind schon 30 Ideen von dir. Lösche erst eine.");return;}
+ var id=Date.now().toString(36)+Math.random().toString(36).slice(2,5);
+ var lvl=parseInt(document.querySelector('input[name="ideaLevel"]:checked').value,10)||1;
+ var day=document.getElementById("ideaDay").value;
+ var kind=document.querySelector('input[name="ideaKind"]:checked').value==="food"?"food":"act";
+ me.ideas.push({id:id,day:day,kind:kind,ticket:document.getElementById("ideaTicket").checked,title:title.slice(0,60),note:document.getElementById("ideaNote").value.trim().slice(0,140),level:lvl});
+ me.votes["i-"+uid+"-"+id]=document.getElementById("ideaTicket").checked?"yes":"must";
+ closeSheet();render();save();toast("Idee eingetragen. Die anderen sehen sie sofort.");
+});
+
+view.addEventListener("click",function(e){
+ var b=e.target.closest("[data-act]");if(!b||b.disabled)return;
+ var a=b.getAttribute("data-act");
+ if(a==="vote")setVote(b.getAttribute("data-card"),b.getAttribute("data-v"));
+ else if(a==="task")toggleTask(b.getAttribute("data-task"));
+ else if(a==="delidea")delIdea(b.getAttribute("data-iid"));
+ else if(a==="addidea")openSheet(b.getAttribute("data-day"));
+ else if(a==="goto")setTab(b.getAttribute("data-tab"));
+ else if(a==="trip")setTrip(b.getAttribute("data-group"),b.getAttribute("data-val"));
+});
+view.addEventListener("change",function(e){
+ if(e.target&&e.target.id==="roomWish"){
+  if(!canAct()){e.target.value=me.room.wish||"";return;}
+  me.room.wish=e.target.value.trim().slice(0,80);
+  save();
+ }
+});
+view.addEventListener("focusout",function(){if(pendingRender)setTimeout(render,0);});
+view.addEventListener("toggle",function(e){
+ var t=e.target;
+ if(t&&t.classList&&t.classList.contains("foodbox"))openFood[t.getAttribute("data-day")]=t.open;
+},true);
+document.querySelector(".tabs").addEventListener("click",function(e){
+ var b=e.target.closest("[data-tab]");if(b)setTab(b.getAttribute("data-tab"));
+});
+document.getElementById("chips").addEventListener("click",function(e){
+ var b=e.target.closest("[data-day]");if(!b)return;
+ var el=document.getElementById("day-"+b.getAttribute("data-day"));
+ if(el)el.scrollIntoView({behavior:window.matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"start"});
+});
+document.getElementById("nameInput").addEventListener("change",function(e){
+ if(!canAct()){e.target.value=me.nick||profileFirst||"";return;}
+ me.nick=e.target.value.trim().slice(0,30);
+ render();save();
+});
+
+/* ---------- Start ---------- */
+buildChips();
+render();
+(async function(){
+ try {
+  const credential = await signInAnonymously(firebaseAuth);
+  uid = credential.user.uid;
+  dbOk = true;
+  myRef = { set: function(data) { return set(ref(firebaseDb, "people/" + uid), data); } };
+  onValue(ref(firebaseDb, "people"), function(snapshot) {
+   people = snapshot.val() || {};
+   if (!writing && !dirty) me = norm(people[uid]);
+   ready = true;
+   render();
+  }, function(error) {
+   ready = false;
+   render();
+   console.error("Firebase-Daten konnten nicht geladen werden:", error);
+   toast("Die Datenbank-Verbindung ist fehlgeschlagen. Bitte prüfe die Firebase-Regeln und die autorisierte Domain.");
+  });
+ } catch (error) {
+  dbOk = false;
+  uid = null;
+  render();
+  console.error("Firebase-Anmeldung fehlgeschlagen:", error);
+  toast("Anmeldung bei Firebase fehlgeschlagen. Bitte prüfe die autorisierte Domain und die anonyme Anmeldung.");
+ }
+})();
+})();
+</script>
+
+</body></html>
